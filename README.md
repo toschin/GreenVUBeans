@@ -1,2 +1,2 @@
 # GreenVUBeans
-Project for the Service Oriented Design course at VU Amsterdam (2023)
+Project for the Green Lab course at VU Amsterdam (2023)

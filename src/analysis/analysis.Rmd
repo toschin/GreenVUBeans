@@ -1,0 +1,61 @@
+---
+title: "Analysis of Test Results"
+author: "Team GreenBeans"
+date: "2023-09-08"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, results = "hide",fig.show = 'hide'  )
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+data <- read.csv("../../data/processed/data.csv")
+data
+```
+
+Factor columns:
+
+```{r}
+data$concat <- as.factor(data$concat)
+data$qlim <- as.factor(data$qlim)
+data$ntasks <- as.factor(data$ntasks)
+data$cpuspt <- as.factor(data$cpuspt)
+data$ConsumedEnergy <- as.numeric(data$ConsumedEnergy)#
+
+data$Elapsed <- sapply(strsplit(data$Elapsed,":"),
+  function(x) {
+    x <- as.numeric(x)
+    x[1]*3600+x[2]*60+x[3]
+    }
+)
+
+data
+```
+
+```{r}
+data_hpc <- data %>%
+  filter(mode == "hpc")
+  ggplot(data_hpc, aes(x=concat, y=ConsumedEnergy, fill=concat)) + geom_boxplot() +
+  stat_summary(fun = mean,color= 'red', geom = "point", shape = 1, size = 2) +
+  labs(title="Box Plots",
+  x="concat",
+  y="Energy consumed") 
+```
+
+```{r}
+violin <- ggplot(data, aes(x=concat, y=ConsumedEnergy, fill=concat)) +
+          geom_violin(trim=FALSE, alpha = 0.8) + # alpha for the opacity
+          geom_boxplot(width=0.2, fill="white", outlier.size = 0.2) +
+          stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+          labs(title="Violin Plot",
+          x="concat",
+          y="Energy consumed") 
+violin
+```

@@ -1,0 +1,35 @@
+---
+title: "preprocessing"
+author: "Team GreenBeans"
+date: "2023-10-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+# Preprocessing
+
+```{r}
+csv_paths <- list.files(path= "../../data/raw",
+             recursive = TRUE, # recursive checks all the sub_directories
+             pattern = "test-results\\.csv",
+             full.names = TRUE)
+```
+
+```{r}
+data <- csv_paths %>%
+  lapply(read_csv) %>%
+  bind_rows %>%
+  select(mode, concat, qlim, ntasks, cpuspt, Elapsed, ConsumedEnergy)
+```
+
+```{r}
+write.csv(data, "../../data/processed/data.csv")
+```
+

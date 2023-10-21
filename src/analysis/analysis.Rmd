@@ -20,7 +20,7 @@ data <- read.csv("../../data/processed/data.csv")
 data
 ```
 
-Factor columns:
+## Convert columns to factor and numeric type
 
 ```{r}
 data$concat <- as.factor(data$concat)
@@ -29,6 +29,7 @@ data$ntasks <- as.factor(data$ntasks)
 data$cpuspt <- as.factor(data$cpuspt)
 data$ConsumedEnergy <- as.numeric(data$ConsumedEnergy)#
 
+# HH:MM:SS is converted into an integer of seconds
 data$Elapsed <- sapply(strsplit(data$Elapsed,":"),
   function(x) {
     x <- as.numeric(x)
@@ -39,10 +40,14 @@ data$Elapsed <- sapply(strsplit(data$Elapsed,":"),
 data
 ```
 
+
 ```{r}
 data_hpc <- data %>%
   filter(mode == "hpc")
-  ggplot(data_hpc, aes(x=concat, y=ConsumedEnergy, fill=concat)) + geom_boxplot() +
+```
+
+```{r}
+ggplot(data_hpc, aes(x=concat, y=ConsumedEnergy, fill=concat)) + geom_boxplot() +
   stat_summary(fun = mean,color= 'red', geom = "point", shape = 1, size = 2) +
   labs(title="Box Plots",
   x="concat",
@@ -50,7 +55,7 @@ data_hpc <- data %>%
 ```
 
 ```{r}
-violin <- ggplot(data, aes(x=concat, y=ConsumedEnergy, fill=concat)) +
+violin <- ggplot(data_hpc, aes(x=concat, y=ConsumedEnergy, fill=concat)) +
           geom_violin(trim=FALSE, alpha = 0.8) + # alpha for the opacity
           geom_boxplot(width=0.2, fill="white", outlier.size = 0.2) +
           stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
@@ -59,3 +64,24 @@ violin <- ggplot(data, aes(x=concat, y=ConsumedEnergy, fill=concat)) +
           y="Energy consumed") 
 violin
 ```
+
+## Graphical summary of Runtime
+
+```{r}
+ggplot(data_hpc, aes(x=concat, y=Elapsed, fill=concat)) + geom_boxplot() +
+  stat_summary(fun = mean,color= 'red', geom = "point", shape = 1, size = 2) +
+  labs(title="Box Plots",
+  x="concat",
+  y="Runtime") 
+```
+
+```{r}
+ggplot(data_hpc, aes(x=concat, y=Elapsed, fill=concat)) +
+          geom_violin(trim=FALSE, alpha = 0.8) + # alpha for the opacity
+          geom_boxplot(width=0.2, fill="white", outlier.size = 0.2) +
+          stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+          labs(title="Violin Plot of runtime",
+          x="concat",
+          y="Runtime") 
+```
+

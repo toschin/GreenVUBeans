@@ -26,7 +26,9 @@ csv_paths <- list.files(path= "../../data/raw",
 data <- csv_paths %>%
   lapply(read_csv) %>%
   bind_rows %>%
-  select(mode, concat, qlim, ntasks, cpuspt, Elapsed, ConsumedEnergy)
+  select(mode, concat, qlim, ntasks, cpuspt, Elapsed, ConsumedEnergy) %>%
+  filter(!is.na(Elapsed), !is.na(ConsumedEnergy))
+data
 ```
 
 ```{r}

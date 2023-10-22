@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, results = "
 
 ```{r}
 library(tidyverse)
+library(car)
 ```
 
 ```{r}
@@ -24,10 +25,10 @@ data
 
 ```{r}
 data$concat <- as.factor(data$concat)
-data$qlim <- as.factor(data$qlim)
-data$ntasks <- as.factor(data$ntasks)
-data$cpuspt <- as.factor(data$cpuspt)
-data$ConsumedEnergy <- as.numeric(data$ConsumedEnergy)#
+data$queue_limit <- as.factor(data$queue_limit)
+data$ncores <- as.factor(data$ncores)
+data$ConsumedEnergy <- as.numeric(gsub("K", "e3", data$ConsumedEnergy))
+
 
 # HH:MM:SS is converted into an integer of seconds
 data$Elapsed <- sapply(strsplit(data$Elapsed,":"),
@@ -36,15 +37,38 @@ data$Elapsed <- sapply(strsplit(data$Elapsed,":"),
     x[1]*3600+x[2]*60+x[3]
     }
 )
-
-data
 ```
 
-
+## Select data of mode HPC
 ```{r}
 data_hpc <- data %>%
   filter(mode == "hpc")
 ```
+
+```{r}
+data_hpc
+```
+
+```{r}
+ggplot(data_hpc, aes(x = ConsumedEnergy)) + 
+  geom_histogram()
+qqPlot(data_hpc$ConsumedEnergy)
+```
+
+
+```{r}
+ggplot(data_hpc, aes(x = ConsumedEnergy)) + 
+  geom_histogram() + 
+  facet_grid(queue_limit ~ concat, labeller=label_both, scales = "free")
+```
+
+```{r}
+ggplot(data_hpc, aes(x = Elapsed)) + 
+  geom_histogram() + 
+  facet_grid(queue_limit ~ concat, labeller=label_both, scales='free')
+```
+
+
 
 ```{r}
 ggplot(data_hpc, aes(x=concat, y=ConsumedEnergy, fill=concat)) + geom_boxplot() +

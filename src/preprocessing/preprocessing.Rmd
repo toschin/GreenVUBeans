@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidyverse)
+library(jsonlite)
 ```
 
 # Preprocessing
@@ -18,7 +19,7 @@ library(tidyverse)
 ```{r}
 csv_paths <- list.files(path= "../../data/raw",
              recursive = TRUE, # recursive checks all the sub_directories
-             pattern = "test-results\\.csv",
+             pattern = "experiment-data\\.csv",
              full.names = TRUE)
 ```
 
@@ -26,7 +27,9 @@ csv_paths <- list.files(path= "../../data/raw",
 data <- csv_paths %>%
   lapply(read_csv) %>%
   bind_rows %>%
-  select(mode, concat, qlim, ntasks, cpuspt, Elapsed, ConsumedEnergy) %>%
+  mutate(parameters = map(parameters, ~ fromJSON(.) %>% as.data.frame())) %>% 
+  unnest(parameters) %>%
+ select(mode, ncores, concat, queue_limit, Elapsed, ConsumedEnergy) %>%
   filter(!is.na(Elapsed), !is.na(ConsumedEnergy))
 data
 ```

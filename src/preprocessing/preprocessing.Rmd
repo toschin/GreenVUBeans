@@ -29,12 +29,12 @@ data <- csv_paths %>%
   bind_rows %>%
   mutate(parameters = map(parameters, ~ fromJSON(.) %>% as.data.frame())) %>% 
   unnest(parameters) %>%
- select(mode, ncores, concat, queue_limit, Elapsed, ConsumedEnergy) %>%
+ select(mode, ncores, NodeList, concat, queue_limit, Elapsed, ConsumedEnergy) %>%
   filter(!is.na(Elapsed), !is.na(ConsumedEnergy))
 data
 ```
 
 ```{r}
-write.csv(data, "../../data/processed/data.csv")
+write.csv(data, "../../data/processed/data.csv", row.names = FALSE)
 ```
 

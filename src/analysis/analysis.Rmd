@@ -49,7 +49,7 @@ data_local <- data %>%
   filter(mode == "local")
 ```
 
-## Test normality of ConsumedEnergy
+## Test normality of Consumed Energy
 
 ### Graphical
 
@@ -113,7 +113,7 @@ shapiro.test(data_local$Elapsed)
 ks.test(data_local$Elapsed, "pnorm")
 ```
 
-## Mann-Whitney-Wilcoxon Test: local vs hpc
+## Mann-Whitney U Test: local vs hpc
 
 ```{r}
 wilcox.test(data_local$ConsumedEnergy, data_hpc$ConsumedEnergy, alternative = "greater")

@@ -1,0 +1,4 @@
+JobID                                                   JobName    Cluster        NodeList      State               Start                 End    Elapsed     MaxRSS     AveRSS ConsumedEnergy    AveDiskRead   AveDiskWrite  AveVMSize      NCPUS 
+------------ -------------------------------------------------- ---------- --------------- ---------- ------------------- ------------------- ---------- ---------- ---------- -------------- -------------- -------------- ---------- ---------- 
+34314                 docking-protein-protein-hpc-1-100-2nd.cfg    gl2_gl4    GreenLab-STF  COMPLETED 2023-10-24T02:26:39 2023-10-24T05:17:07   02:50:28                                                                                        2 
+34314.batch                                               batch    gl2_gl4    GreenLab-STF  COMPLETED 2023-10-24T02:26:39 2023-10-24T05:17:07   02:50:28    713416K    713416K         44.12K       3556.46M         63.70M   5676800K          2 

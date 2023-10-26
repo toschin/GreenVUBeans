@@ -1,0 +1,56 @@
+[2023-10-22 22:04:46,624 cli INFO] 
+##############################################
+#                                            #
+#                 HADDOCK 3                  #
+#                                            #
+##############################################
+
+Starting HADDOCK 3.0.0 on 2023-10-22 22:04:00
+
+Python 3.9.18 (main, Sep 11 2023, 13:41:44) 
+[GCC 11.2.0]
+
+[2023-10-22 22:04:53,159 libworkflow INFO] Reading instructions step 0_topoaa
+[2023-10-22 22:04:53,160 libworkflow INFO] Reading instructions step 1_rigidbody
+[2023-10-22 22:04:53,162 libworkflow INFO] Reading instructions step 2_seletop
+[2023-10-22 22:04:53,162 libworkflow INFO] Reading instructions step 3_caprieval
+[2023-10-22 22:04:53,162 libworkflow INFO] Reading instructions step 4_flexref
+[2023-10-22 22:04:53,165 libworkflow INFO] Reading instructions step 5_caprieval
+[2023-10-22 22:04:53,165 libworkflow INFO] Reading instructions step 6_emref
+[2023-10-22 22:04:53,167 libworkflow INFO] Reading instructions step 7_caprieval
+[2023-10-22 22:04:53,315 base_cns_module INFO] Running [topoaa] module
+[2023-10-22 22:04:53,316 __init__ INFO] [topoaa] Molecule 1: e2aP_1F3G.pdb
+[2023-10-22 22:04:53,327 __init__ INFO] [topoaa] Sanitizing molecule e2aP_1F3G.pdb
+[2023-10-22 22:04:53,453 __init__ INFO] [topoaa] Topology CNS input created in e2aP_1F3G.inp
+[2023-10-22 22:04:53,453 __init__ INFO] [topoaa] Molecule 2: hpr_ensemble.pdb
+[2023-10-22 22:04:54,195 __init__ INFO] [topoaa] Sanitizing molecule hpr_ensemble_1.pdb
+[2023-10-22 22:04:54,317 __init__ INFO] [topoaa] Topology CNS input created in hpr_ensemble_1.inp
+[2023-10-22 22:04:54,317 __init__ INFO] [topoaa] Sanitizing molecule hpr_ensemble_2.pdb
+[2023-10-22 22:04:54,455 __init__ INFO] [topoaa] Topology CNS input created in hpr_ensemble_2.inp
+[2023-10-22 22:04:54,455 __init__ INFO] [topoaa] Sanitizing molecule hpr_ensemble_3.pdb
+[2023-10-22 22:04:54,581 __init__ INFO] [topoaa] Topology CNS input created in hpr_ensemble_3.inp
+[2023-10-22 22:04:54,581 __init__ INFO] [topoaa] Sanitizing molecule hpr_ensemble_4.pdb
+[2023-10-22 22:04:54,720 __init__ INFO] [topoaa] Topology CNS input created in hpr_ensemble_4.inp
+[2023-10-22 22:04:54,721 __init__ INFO] [topoaa] Sanitizing molecule hpr_ensemble_5.pdb
+[2023-10-22 22:04:54,865 __init__ INFO] [topoaa] Topology CNS input created in hpr_ensemble_5.inp
+[2023-10-22 22:04:54,865 __init__ INFO] [topoaa] Sanitizing molecule hpr_ensemble_6.pdb
+[2023-10-22 22:04:54,977 __init__ INFO] [topoaa] Topology CNS input created in hpr_ensemble_6.inp
+[2023-10-22 22:04:54,977 __init__ INFO] [topoaa] Sanitizing molecule hpr_ensemble_7.pdb
+[2023-10-22 22:04:55,081 __init__ INFO] [topoaa] Topology CNS input created in hpr_ensemble_7.inp
+[2023-10-22 22:04:55,081 __init__ INFO] [topoaa] Sanitizing molecule hpr_ensemble_8.pdb
+[2023-10-22 22:04:55,207 __init__ INFO] [topoaa] Topology CNS input created in hpr_ensemble_8.inp
+[2023-10-22 22:04:55,208 __init__ INFO] [topoaa] Sanitizing molecule hpr_ensemble_9.pdb
+[2023-10-22 22:04:55,326 __init__ INFO] [topoaa] Topology CNS input created in hpr_ensemble_9.inp
+[2023-10-22 22:04:55,327 __init__ INFO] [topoaa] Sanitizing molecule hpr_ensemble_10.pdb
+[2023-10-22 22:04:55,460 __init__ INFO] [topoaa] Topology CNS input created in hpr_ensemble_10.inp
+[2023-10-22 22:04:55,460 __init__ INFO] [topoaa] Running CNS Jobs n=11
+[2023-10-22 22:04:55,493 libmpi INFO] Executing tasks with the haddock3-mpitask runner using 32 processors...
+[2023-10-22 22:04:55,678 libmpi ERROR] --------------------------------------------------------------------------
+An ORTE daemon has unexpectedly failed after launch and before
+communicating back to mpirun. This could be caused by a number
+of factors, including an inability to create a connection back
+to mpirun due to a lack of common network interfaces and/or no
+route found between them. Please check network connectivity
+(including firewalls and network routing requirements).
+--------------------------------------------------------------------------
+

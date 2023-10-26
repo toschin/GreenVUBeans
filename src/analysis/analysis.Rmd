@@ -112,6 +112,36 @@ ks.test(data_hpc$Elapsed, "pnorm")
 shapiro.test(data_local$Elapsed)
 ks.test(data_local$Elapsed, "pnorm")
 ```
+## Test normality of nAveVMSize
+
+### Graphical
+
+```{r}
+ggplot(data_hpc, aes(x = nAveVMSize)) + 
+  geom_histogram()
+ggplot(data_local, aes(x = nAveVMSize)) + 
+  geom_histogram()
+ggplot(data, aes(x=mode, y=nAveVMSize)) +
+          geom_violin(trim=FALSE, alpha = 0.8) + # alpha for the opacity
+          geom_boxplot(width=0.2, fill="white", outlier.size = 0.2) +
+          stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+          labs(title="Violin Plot with Inner Boxplot",
+          x="mode",
+          y="nAveVMSize")
+qqPlot(data_hpc$nAveVMSize)
+qqPlot(data_local$nAveVMSize)
+```
+### Statistical Tests
+
+```{r}
+# HPC
+shapiro.test(data_hpc$nAveVMSize)
+ks.test(data_hpc$nAveVMSize, "pnorm")
+
+# Local
+shapiro.test(data_local$nAveVMSize)
+ks.test(data_local$nAveVMSize, "pnorm")
+```
 
 ## Mann-Whitney U Test: local vs hpc
 
@@ -177,6 +207,23 @@ anova(lm_local)
 summary(lm_local)
 qqPlot(residuals(lm_local))
 #friedman.test(data_local$ConsumedEnergy, data_local$ncores, data_local$NodeList)
+```
+```{r}
+data_local_gl2_gl5 <- data_local %>%
+  filter((NodeList == 'gl5' & ncores != 16 &ncores != 32) | (NodeList == 'gl2'))
+data_local_gl5_gl6 <- data_local %>%
+  filter((NodeList == 'gl5' & ncores != 2 &ncores != 4) | (NodeList == 'gl6'))
+lm_gl2_gl5 <- lm(ConsumedEnergy ~ ncores + NodeList, data=data_local_gl2_gl5) #ncores and NodeList not significant
+lm_gl2_gl5_2 <-lm(ConsumedEnergy ~ NodeList, data=data_local_gl2_gl5) #NodeList not significant
+lm_gl5_gl6 <- lm(ConsumedEnergy ~ ncores + NodeList, data=data_local_gl5_gl6) #NodeList not significant
+lm_gl5_gl6_2 <- lm(ConsumedEnergy ~ ncores, data=data_local_gl5_gl6)
+anova(lm_gl2_gl5)
+anova(lm_gl2_gl5_2)
+anova(lm_gl5_gl6)
+anova(lm_gl5_gl6_2)
+qqPlot(residuals(lm_gl2_gl5))
+qqPlot(residuals(lm_gl5_gl6))
+qqPlot(residuals(lm_gl5_gl6_2))
 ```
 
 ## Factors in mode HPC

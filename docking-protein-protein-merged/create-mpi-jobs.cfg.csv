@@ -1,0 +1,7 @@
+ncores	nodes	tasks-per-node
+6	3	2
+36	3	12
+72	3	24
+4	2	2
+32	2	16
+64	2	32

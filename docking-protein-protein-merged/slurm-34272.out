@@ -1,0 +1,29 @@
+/var/spool/slurmd/job34272/slurm_script: line 7: /home/greenBeans/miniconda3/bin/activate: No such file or directory
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'activate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'build', 'content-trust', 'convert', 'debug', 'develop', 'doctor', 'index', 'inspect', 'metapackage', 'render', 'skeleton', 'repo', 'pack', 'token', 'server', 'verify', 'env')
+Traceback (most recent call last):
+  File "/usr/local/bin/haddock3", line 33, in <module>
+    sys.exit(load_entry_point('haddock3', 'console_scripts', 'haddock3')())
+  File "/usr/local/bin/haddock3", line 25, in importlib_load_entry_point
+    return next(matches).load()
+  File "/usr/lib/python3.10/importlib/metadata/__init__.py", line 171, in load
+    module = import_module(match.group('module'))
+  File "/usr/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/vincenzo/haddock3/src/haddock/clis/cli.py", line 21, in <module>
+    from haddock.gear.extend_run import EXTEND_RUN_DEFAULT, add_extend_run
+  File "/home/vincenzo/haddock3/src/haddock/gear/extend_run.py", line 8, in <module>
+    from haddock.gear.clean_steps import UNPACK_FOLDERS, clean_output
+  File "/home/vincenzo/haddock3/src/haddock/gear/clean_steps.py", line 24, in <module>
+    from haddock.libs.libio import (
+  File "/home/vincenzo/haddock3/src/haddock/libs/libio.py", line 15, in <module>
+    from haddock.libs.libontology import PDBFile
+  File "/home/vincenzo/haddock3/src/haddock/libs/libontology.py", line 8, in <module>
+    import jsonpickle
+ModuleNotFoundError: No module named 'jsonpickle'

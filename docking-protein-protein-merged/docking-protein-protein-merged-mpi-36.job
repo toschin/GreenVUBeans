@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --nodes=3
+#SBATCH --tasks-per-node=12
+#SBATCH -J haddock3mpi
+
+# make sure anaconda is activated
+source $HOME/miniconda3/bin/activate
+conda activate haddock3
+
+# go to the example directory
+cd /mnt/nfs_share/greenBeansHaddock/docking-protein-protein-merged
+
+# execute
+haddock3 docking-protein-protein-merged-mpi-36.cfg

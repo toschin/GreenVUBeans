@@ -155,11 +155,16 @@ cliff.delta(data_local$Elapsed, data_hpc$Elapsed)
 
 ## Factors in mode local
 
+### Graphical Summary
+
 ```{r}
 ggplot(data_local, aes(x = ncores, y = ConsumedEnergy)) + 
   facet_grid(NodeList ~ ncores, labeller=label_both, scales='fixed') +
   stat_summary(fun = mean, geom = "bar") 
 ggplot(data_local, aes(x = ncores, y = Elapsed)) + 
+  facet_grid(NodeList ~ ncores, labeller=label_both, scales='fixed') +
+  stat_summary(fun = mean, geom = "bar")
+ggplot(data_local, aes(x = ncores, y = nAveVMSize)) + 
   facet_grid(NodeList ~ ncores, labeller=label_both, scales='fixed') +
   stat_summary(fun = mean, geom = "bar")
 ggplot(data_local, aes(x=ncores, y=ConsumedEnergy)) +
@@ -174,6 +179,12 @@ ggplot(data_local, aes(x=ncores, y=Elapsed)) +
           labs(title="Violin Plot with Inner Boxplot",
           x="ncores",
           y="Runtime")
+ggplot(data_local, aes(x=ncores, y=nAveVMSize)) +
+          geom_boxplot() +
+          stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+          labs(title="Violin Plot with Inner Boxplot",
+          x="ncores",
+          y="nAveVMSize")
 
 data_local %>%
   group_by(ncores)%>%
@@ -196,10 +207,24 @@ data_local %>%
             min = min (Elapsed),
             max = max (Elapsed)
             )
+
+data_local %>%
+  group_by(ncores)%>%
+  summarize(n=n(),
+            mean = mean(nAveVMSize),
+            median = median(nAveVMSize),
+            sd = sd (nAveVMSize),
+            IQR = IQR (nAveVMSize),
+            min = min (nAveVMSize),
+            max = max (nAveVMSize)
+            )
 interaction.plot(data_local$ncores, data_local$NodeList, data_local$ConsumedEnergy)
 interaction.plot(data_local$ncores, data_local$NodeList, data_local$Elapsed)
+interaction.plot(data_local$ncores, data_local$NodeList, data_local$nAveVMSize)
 ```
 
+### Statistical Tests
+#### Consumed Energy
 ```{r}
 # Additive Model without Interaction
 lm_local <- lm(ConsumedEnergy ~ ncores + NodeList, data = data_local)
@@ -225,6 +250,41 @@ qqPlot(residuals(lm_gl2_gl5))
 qqPlot(residuals(lm_gl5_gl6))
 qqPlot(residuals(lm_gl5_gl6_2))
 ```
+#### Runtime
+
+```{r}
+# Additive Model without Interaction
+lm_local <- lm(Elapsed ~ ncores + NodeList, data = data_local)
+anova(lm_local)
+summary(lm_local)
+qqPlot(residuals(lm_local))
+```
+
+```{r}
+lm_gl2_gl5 <- lm(Elapsed ~ ncores + NodeList, data=data_local_gl2_gl5)
+lm_gl2_gl5_2 <-lm(Elapsed ~ ncores, data=data_local_gl2_gl5) 
+lm_gl5_gl6 <- lm(Elapsed ~ ncores + NodeList, data=data_local_gl5_gl6)
+lm_gl5_gl6_2 <- lm(Elapsed ~ ncores, data=data_local_gl5_gl6)
+anova(lm_gl2_gl5)
+anova(lm_gl2_gl5_2)
+anova(lm_gl5_gl6)
+anova(lm_gl5_gl6_2)
+qqPlot(residuals(lm_gl2_gl5))
+qqPlot(residuals(lm_gl2_gl5_2))
+qqPlot(residuals(lm_gl5_gl6))
+qqPlot(residuals(lm_gl5_gl6_2))
+```
+
+#### nAveVMSize
+
+```{r}
+# Additive Model without Interaction
+lm_local <- lm(nAveVMSize ~ ncores + NodeList, data = data_local)
+anova(lm_local)
+summary(lm_local)
+qqPlot(residuals(lm_local))
+```
+
 
 ## Factors in mode HPC
 
@@ -237,11 +297,20 @@ ggplot(data_hpc, aes(x = queue_limit, y = ConsumedEnergy)) +
 ggplot(data_hpc, aes(x = queue_limit, y = Elapsed)) + 
   facet_grid(concat ~ queue_limit, labeller=label_both, scales='fixed') +
   stat_summary(fun = mean, geom = "bar") 
+ggplot(data_hpc, aes(x = queue_limit, y = nAveVMSize)) + 
+  facet_grid(concat ~ queue_limit, labeller=label_both, scales='fixed') +
+  stat_summary(fun = mean, geom = "bar") 
 ggplot(data_hpc, aes(x=queue_limit, y=ConsumedEnergy)) +
           geom_boxplot() +
           stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
           labs(title="Boxplot",
           x="Queue Limit",
+          y="Consumed Energy")
+ggplot(data_hpc, aes(x=concat, y=ConsumedEnergy)) +
+          geom_boxplot() +
+          stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+          labs(title="Boxplot",
+          x="Concat",
           y="Consumed Energy")
 ggplot(data_hpc, aes(x=queue_limit, y=Elapsed)) +
           geom_boxplot() +
@@ -249,6 +318,24 @@ ggplot(data_hpc, aes(x=queue_limit, y=Elapsed)) +
           labs(title="Boxplot",
           x="Queue Limit",
           y="Runtime")
+ggplot(data_hpc, aes(x=concat, y=Elapsed)) +
+          geom_boxplot() +
+          stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+          labs(title="Boxplot",
+          x="Concat",
+          y="Runtime")
+ggplot(data_hpc, aes(x=queue_limit, y=nAveVMSize)) +
+          geom_boxplot() +
+          stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+          labs(title="Boxplot",
+          x="Queue Limit",
+          y="nAveVMSize")
+ggplot(data_hpc, aes(x=concat, y=nAveVMSize)) +
+          geom_boxplot() +
+          stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+          labs(title="Boxplot",
+          x="Concat",
+          y="nAveVMSize")
 
 data_hpc %>%
   group_by(queue_limit)%>%
@@ -271,8 +358,24 @@ data_hpc %>%
             min = min (Elapsed),
             max = max (Elapsed)
             )
+
+data_hpc %>%
+  group_by(queue_limit)%>%
+  summarize(n=n(),
+            mean = mean(nAveVMSize),
+            median = median(nAveVMSize),
+            sd = sd (nAveVMSize),
+            IQR = IQR (nAveVMSize),
+            min = min (nAveVMSize),
+            max = max (nAveVMSize)
+            )
+
 interaction.plot(data_hpc$queue_limit, data_hpc$concat, data_hpc$ConsumedEnergy)
+interaction.plot(data_hpc$concat, data_hpc$queue_limit, data_hpc$ConsumedEnergy)
 interaction.plot(data_hpc$queue_limit, data_hpc$concat, data_hpc$Elapsed)
+interaction.plot(data_hpc$concat, data_hpc$queue_limit, data_hpc$Elapsed)
+interaction.plot(data_hpc$queue_limit, data_hpc$concat, data_hpc$nAveVMSize)
+interaction.plot(data_hpc$concat, data_hpc$queue_limit, data_hpc$nAveVMSize)
 ```
 
 ### Statistical Tests
@@ -282,15 +385,15 @@ interaction.plot(data_hpc$queue_limit, data_hpc$concat, data_hpc$Elapsed)
 ```{r}
 # Additive Model without Interaction
 lm_hpc <- lm(ConsumedEnergy ~ queue_limit + concat, data = data_hpc)
-summary(lm_hpc)
 anova(lm_hpc)
+summary(lm_hpc)
 qqPlot(residuals(lm_hpc))
 ```
 
 ```{r}
 lm_hpc2 <- lm(ConsumedEnergy ~ concat, data = data_hpc)
-summary(lm_hpc2)
 anova(lm_hpc2)
+summary(lm_hpc2)
 qqPlot(residuals(lm_hpc2))
 ```
 ```{r}
@@ -298,3 +401,30 @@ friedman.test(formula = ConsumedEnergy ~ queue_limit | concat, data = head(data_
 ```
 
 #### Runtime
+
+```{r}
+# Additive Model without Interaction
+lm_hpc_elapsed <- lm(Elapsed ~ queue_limit + concat, data = data_hpc)
+anova(lm_hpc_elapsed)
+qqPlot(residuals(lm_hpc_elapsed))
+```
+```{r}
+lm_hpc_elapsed_2 <- lm(Elapsed ~ concat, data = data_hpc)
+anova(lm_hpc_elapsed_2)
+qqPlot(residuals(lm_hpc_elapsed_2)) # not normal
+```
+
+#### nAveVMSize
+```{r}
+# Additive Model without Interaction
+lm_hpc_mem <- lm(nAveVMSize ~ queue_limit + concat, data = data_hpc)
+anova(lm_hpc_mem)
+qqPlot(residuals(lm_hpc_mem))
+```
+```{r}
+# Additive Model without Interaction
+lm_hpc_mem_2 <- lm(nAveVMSize ~ concat, data = data_hpc)
+anova(lm_hpc_mem_2)
+summary(lm_hpc_mem_2)
+qqPlot(residuals(lm_hpc_mem_2))
+```

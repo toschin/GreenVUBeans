@@ -41,6 +41,7 @@ data$Elapsed <- sapply(strsplit(data$Elapsed,":"),
 ```
 
 ## Select data of modes HPC and local
+
 ```{r}
 data_hpc <- data %>%
   filter(mode == "hpc")
@@ -49,7 +50,9 @@ data_local <- data %>%
 ```
 
 ## Test normality of ConsumedEnergy
+
 ### Graphical
+
 ```{r}
 ggplot(data_hpc, aes(x = ConsumedEnergy)) + 
   geom_histogram()
@@ -65,7 +68,9 @@ ggplot(data, aes(x=mode, y=ConsumedEnergy)) +
 qqPlot(data_hpc$ConsumedEnergy)
 qqPlot(data_local$ConsumedEnergy)
 ```
+
 ### Statistical Tests
+
 ```{r}
 # HPC
 shapiro.test(data_hpc$ConsumedEnergy)
@@ -75,8 +80,11 @@ ks.test(data_hpc$ConsumedEnergy, "pnorm")
 shapiro.test(data_local$ConsumedEnergy)
 ks.test(data_local$ConsumedEnergy, "pnorm")
 ```
+
 ## Test normality of Runtime
+
 ### Graphical
+
 ```{r}
 ggplot(data_hpc, aes(x = Elapsed)) + 
   geom_histogram()
@@ -92,7 +100,9 @@ ggplot(data, aes(x=mode, y=Elapsed)) +
 qqPlot(data_hpc$Elapsed)
 qqPlot(data_local$Elapsed)
 ```
+
 ### Statistical Tests
+
 ```{r}
 # HPC
 shapiro.test(data_hpc$Elapsed)
@@ -102,7 +112,9 @@ ks.test(data_hpc$Elapsed, "pnorm")
 shapiro.test(data_local$Elapsed)
 ks.test(data_local$Elapsed, "pnorm")
 ```
+
 ## Mann-Whitney-Wilcoxon Test: local vs hpc
+
 ```{r}
 wilcox.test(data_local$ConsumedEnergy, data_hpc$ConsumedEnergy, alternative = "greater")
 cliff.delta(data_local$ConsumedEnergy, data_hpc$ConsumedEnergy)
@@ -110,6 +122,7 @@ cliff.delta(data_local$ConsumedEnergy, data_hpc$ConsumedEnergy)
 wilcox.test(data_local$Elapsed, data_hpc$Elapsed, alternative = "less")
 cliff.delta(data_local$Elapsed, data_hpc$Elapsed)
 ```
+
 ## Factors in mode local
 
 ```{r}
@@ -156,69 +169,85 @@ data_local %>%
 interaction.plot(data_local$ncores, data_local$NodeList, data_local$ConsumedEnergy)
 interaction.plot(data_local$ncores, data_local$NodeList, data_local$Elapsed)
 ```
+
 ```{r}
 # Additive Model without Interaction
 lm_local <- lm(ConsumedEnergy ~ ncores + NodeList, data = data_local)
 anova(lm_local)
 summary(lm_local)
 qqPlot(residuals(lm_local))
-friedman.test(data_local$ConsumedEnergy, data_local$ncores, data_local$NodeList)
+#friedman.test(data_local$ConsumedEnergy, data_local$ncores, data_local$NodeList)
 ```
-
-
 
 ## Factors in mode HPC
 
-```{r}
-ggplot(data_hpc, aes(x = ConsumedEnergy)) + 
-  geom_histogram() + 
-  facet_grid(queue_limit ~ concat, labeller=label_both, scales = "free")
-```
+### Graphical Summary
 
 ```{r}
-ggplot(data_hpc, aes(x = Elapsed)) + 
-  geom_histogram() + 
-  facet_grid(queue_limit ~ concat, labeller=label_both, scales='free')
-```
-
-
-
-```{r}
-ggplot(data_hpc, aes(x=concat, y=ConsumedEnergy, fill=concat)) + geom_boxplot() +
-  stat_summary(fun = mean,color= 'red', geom = "point", shape = 1, size = 2) +
-  labs(title="Box Plots",
-  x="concat",
-  y="Energy consumed") 
-```
-
-```{r}
-violin <- ggplot(data_hpc, aes(x=concat, y=ConsumedEnergy, fill=concat)) +
-          geom_violin(trim=FALSE, alpha = 0.8) + # alpha for the opacity
-          geom_boxplot(width=0.2, fill="white", outlier.size = 0.2) +
+ggplot(data_hpc, aes(x = queue_limit, y = ConsumedEnergy)) + 
+  facet_grid(concat ~ queue_limit, labeller=label_both, scales='fixed') +
+  stat_summary(fun = mean, geom = "bar") 
+ggplot(data_hpc, aes(x = queue_limit, y = Elapsed)) + 
+  facet_grid(concat ~ queue_limit, labeller=label_both, scales='fixed') +
+  stat_summary(fun = mean, geom = "bar") 
+ggplot(data_hpc, aes(x=queue_limit, y=ConsumedEnergy)) +
+          geom_boxplot() +
           stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
-          labs(title="Violin Plot",
-          x="concat",
-          y="Energy consumed") 
-violin
-```
-
-## Graphical summary of Runtime
-
-```{r}
-ggplot(data_hpc, aes(x=concat, y=Elapsed, fill=concat)) + geom_boxplot() +
-  stat_summary(fun = mean,color= 'red', geom = "point", shape = 1, size = 2) +
-  labs(title="Box Plots",
-  x="concat",
-  y="Runtime") 
-```
-
-```{r}
-ggplot(data_hpc, aes(x=concat, y=Elapsed, fill=concat)) +
-          geom_violin(trim=FALSE, alpha = 0.8) + # alpha for the opacity
-          geom_boxplot(width=0.2, fill="white", outlier.size = 0.2) +
+          labs(title="Boxplot",
+          x="Queue Limit",
+          y="Consumed Energy")
+ggplot(data_hpc, aes(x=queue_limit, y=Elapsed)) +
+          geom_boxplot() +
           stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
-          labs(title="Violin Plot of runtime",
-          x="concat",
-          y="Runtime") 
+          labs(title="Boxplot",
+          x="Queue Limit",
+          y="Runtime")
+
+data_hpc %>%
+  group_by(queue_limit)%>%
+  summarize(n=n(),
+            mean = mean(ConsumedEnergy),
+            median = median(ConsumedEnergy),
+            sd = sd (ConsumedEnergy),
+            IQR = IQR (ConsumedEnergy),
+            min = min (ConsumedEnergy),
+            max = max (ConsumedEnergy)
+            )
+
+data_hpc %>%
+  group_by(queue_limit)%>%
+  summarize(n=n(),
+            mean = mean(Elapsed),
+            median = median(Elapsed),
+            sd = sd (Elapsed),
+            IQR = IQR (Elapsed),
+            min = min (Elapsed),
+            max = max (Elapsed)
+            )
+interaction.plot(data_hpc$queue_limit, data_hpc$concat, data_hpc$ConsumedEnergy)
+interaction.plot(data_hpc$queue_limit, data_hpc$concat, data_hpc$Elapsed)
 ```
 
+### Statistical Tests
+
+#### Consumed Energy
+
+```{r}
+# Additive Model without Interaction
+lm_hpc <- lm(ConsumedEnergy ~ queue_limit + concat, data = data_hpc)
+summary(lm_hpc)
+anova(lm_hpc)
+qqPlot(residuals(lm_hpc))
+```
+
+```{r}
+lm_hpc2 <- lm(ConsumedEnergy ~ concat, data = data_hpc)
+summary(lm_hpc2)
+anova(lm_hpc2)
+qqPlot(residuals(lm_hpc2))
+```
+```{r}
+friedman.test(formula = ConsumedEnergy ~ queue_limit | concat, data = head(data_hpc,-1))
+```
+
+#### Runtime

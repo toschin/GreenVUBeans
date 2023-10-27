@@ -448,7 +448,7 @@ qqPlot(residuals(lm_hpc2))
 ```
 
 ```{r}
-friedman.test(formula = ConsumedEnergy ~ queue_limit | concat, data = head(data_hpc,-1))
+friedman.test(formula = ConsumedEnergy ~ queue_limit | concat, data = data_hpc)
 ```
 
 #### Runtime

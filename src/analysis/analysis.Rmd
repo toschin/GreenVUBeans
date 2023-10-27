@@ -15,7 +15,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, results = "
 library(tidyverse)
 library(car)
 library(effsize)
+library(xtable)
 ```
+
+## Read data
 
 ```{r}
 data <- read.csv("../../data/processed/data.csv")
@@ -51,20 +54,34 @@ data_local <- data %>%
 
 ## Test normality of Consumed Energy
 
-### Graphical
+### Graphical Summary
 
 ```{r}
 ggplot(data_hpc, aes(x = ConsumedEnergy)) + 
   geom_histogram()
 ggplot(data_local, aes(x = ConsumedEnergy)) + 
   geom_histogram()
-ggplot(data, aes(x=mode, y=ConsumedEnergy)) +
+violin <- ggplot(data, aes(x=mode, y=ConsumedEnergy)) +
           geom_violin(trim=FALSE, alpha = 0.8) + # alpha for the opacity
           geom_boxplot(width=0.2, fill="white", outlier.size = 0.2) +
           stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
-          labs(title="Violin Plot with Inner Boxplot",
+          labs(
           x="mode",
-          y="Consumed Energy")
+          y="Consumed Energy in Joules")
+ggsave("../../plots/violin_energy_hpc_local.png", plot = violin, width = 10, height = 6)
+
+summary_energy_hpc_local <-  data %>%
+  group_by(mode)%>%
+  summarize(n=n(),
+            mean = mean(ConsumedEnergy),
+            median = median(ConsumedEnergy),
+            sd = sd (ConsumedEnergy),
+            IQR = IQR (ConsumedEnergy),
+            min = min (ConsumedEnergy),
+            max = max (ConsumedEnergy)
+            )
+print(xtable(summary_energy_hpc_local, type = "latex"), file = "../../tables/summary_energy_hpc_local.tex")
+
 qqPlot(data_hpc$ConsumedEnergy)
 qqPlot(data_local$ConsumedEnergy)
 ```
@@ -83,20 +100,34 @@ ks.test(data_local$ConsumedEnergy, "pnorm")
 
 ## Test normality of Runtime
 
-### Graphical
+### Graphical Summary
 
 ```{r}
 ggplot(data_hpc, aes(x = Elapsed)) + 
   geom_histogram()
 ggplot(data_local, aes(x = Elapsed)) + 
   geom_histogram()
-ggplot(data, aes(x=mode, y=Elapsed)) +
+violin <- ggplot(data, aes(x=mode, y=Elapsed)) +
           geom_violin(trim=FALSE, alpha = 0.8) + # alpha for the opacity
           geom_boxplot(width=0.2, fill="white", outlier.size = 0.2) +
           stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
-          labs(title="Violin Plot with Inner Boxplot",
+          labs(
           x="mode",
-          y="Runtime")
+          y="Runtime in seconds")
+ggsave("../../plots/violin_runtime_hpc_local.png", plot = violin, width = 10, height = 6)
+
+summary_runtime_hpc_local <-  data %>%
+  group_by(mode)%>%
+  summarize(n=n(),
+            mean = mean(Elapsed),
+            median = median(Elapsed),
+            sd = sd (Elapsed),
+            IQR = IQR (Elapsed),
+            min = min (Elapsed),
+            max = max (Elapsed)
+            )
+print(xtable(summary_runtime_hpc_local, type = "latex"), file = "../../tables/summary_runtime_hpc_local.tex")
+
 qqPlot(data_hpc$Elapsed)
 qqPlot(data_local$Elapsed)
 ```
@@ -112,25 +143,41 @@ ks.test(data_hpc$Elapsed, "pnorm")
 shapiro.test(data_local$Elapsed)
 ks.test(data_local$Elapsed, "pnorm")
 ```
+
 ## Test normality of nAveVMSize
 
-### Graphical
+### Graphical Summary
 
 ```{r}
 ggplot(data_hpc, aes(x = nAveVMSize)) + 
   geom_histogram()
 ggplot(data_local, aes(x = nAveVMSize)) + 
   geom_histogram()
-ggplot(data, aes(x=mode, y=nAveVMSize)) +
+violin <- ggplot(data, aes(x=mode, y=nAveVMSize)) +
           geom_violin(trim=FALSE, alpha = 0.8) + # alpha for the opacity
           geom_boxplot(width=0.2, fill="white", outlier.size = 0.2) +
           stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
           labs(title="Violin Plot with Inner Boxplot",
           x="mode",
-          y="nAveVMSize")
+          y="Average Virtual Memory Size in Bytes")
+ggsave("../../plots/violin_memory_hpc_local.png", plot = violin, width = 10, height = 6)
+
+summary_memory_hpc_local <-  data %>%
+  group_by(mode)%>%
+  summarize(n=n(),
+            mean = mean(nAveVMSize),
+            median = median(nAveVMSize),
+            sd = sd (nAveVMSize),
+            IQR = IQR (nAveVMSize),
+            min = min (nAveVMSize),
+            max = max (nAveVMSize)
+            )
+print(xtable(summary_memory_hpc_local, type = "latex"), file = "../../tables/summary_memory_hpc_local.tex")
+
 qqPlot(data_hpc$nAveVMSize)
 qqPlot(data_local$nAveVMSize)
 ```
+
 ### Statistical Tests
 
 ```{r}
@@ -224,7 +271,9 @@ interaction.plot(data_local$ncores, data_local$NodeList, data_local$nAveVMSize)
 ```
 
 ### Statistical Tests
+
 #### Consumed Energy
+
 ```{r}
 # Additive Model without Interaction
 lm_local <- lm(ConsumedEnergy ~ ncores + NodeList, data = data_local)
@@ -233,6 +282,7 @@ summary(lm_local)
 qqPlot(residuals(lm_local))
 #friedman.test(data_local$ConsumedEnergy, data_local$ncores, data_local$NodeList)
 ```
+
 ```{r}
 data_local_gl2_gl5 <- data_local %>%
   filter((NodeList == 'gl5' & ncores != 16 &ncores != 32) | (NodeList == 'gl2'))
@@ -250,6 +300,7 @@ qqPlot(residuals(lm_gl2_gl5))
 qqPlot(residuals(lm_gl5_gl6))
 qqPlot(residuals(lm_gl5_gl6_2))
 ```
+
 #### Runtime
 
 ```{r}
@@ -284,7 +335,6 @@ anova(lm_local)
 summary(lm_local)
 qqPlot(residuals(lm_local))
 ```
-
 
 ## Factors in mode HPC
 
@@ -396,6 +446,7 @@ anova(lm_hpc2)
 summary(lm_hpc2)
 qqPlot(residuals(lm_hpc2))
 ```
+
 ```{r}
 friedman.test(formula = ConsumedEnergy ~ queue_limit | concat, data = head(data_hpc,-1))
 ```
@@ -408,6 +459,7 @@ lm_hpc_elapsed <- lm(Elapsed ~ queue_limit + concat, data = data_hpc)
 anova(lm_hpc_elapsed)
 qqPlot(residuals(lm_hpc_elapsed))
 ```
+
 ```{r}
 lm_hpc_elapsed_2 <- lm(Elapsed ~ concat, data = data_hpc)
 anova(lm_hpc_elapsed_2)
@@ -415,12 +467,14 @@ qqPlot(residuals(lm_hpc_elapsed_2)) # not normal
 ```
 
 #### nAveVMSize
+
 ```{r}
 # Additive Model without Interaction
 lm_hpc_mem <- lm(nAveVMSize ~ queue_limit + concat, data = data_hpc)
 anova(lm_hpc_mem)
 qqPlot(residuals(lm_hpc_mem))
 ```
+
 ```{r}
 # Additive Model without Interaction
 lm_hpc_mem_2 <- lm(nAveVMSize ~ concat, data = data_hpc)

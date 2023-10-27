@@ -73,12 +73,12 @@ ggsave("../../plots/violin_energy_hpc_local.png", plot = violin, width = 10, hei
 summary_energy_hpc_local <-  data %>%
   group_by(mode)%>%
   summarize(n=n(),
-            mean = mean(ConsumedEnergy),
-            median = median(ConsumedEnergy),
-            sd = sd (ConsumedEnergy),
-            IQR = IQR (ConsumedEnergy),
-            min = min (ConsumedEnergy),
-            max = max (ConsumedEnergy)
+            Min. = min (ConsumedEnergy),
+            Max. = max (ConsumedEnergy),
+            Median = median(ConsumedEnergy),
+            Mean = mean(ConsumedEnergy),
+            SD = sd (ConsumedEnergy),
+            CV = 100 * sd(ConsumedEnergy) / mean(ConsumedEnergy)
             )
 print(xtable(summary_energy_hpc_local, type = "latex"), file = "../../tables/summary_energy_hpc_local.tex")
 
@@ -119,12 +119,12 @@ ggsave("../../plots/violin_runtime_hpc_local.png", plot = violin, width = 10, he
 summary_runtime_hpc_local <-  data %>%
   group_by(mode)%>%
   summarize(n=n(),
-            mean = mean(Elapsed),
-            median = median(Elapsed),
-            sd = sd (Elapsed),
-            IQR = IQR (Elapsed),
-            min = min (Elapsed),
-            max = max (Elapsed)
+            Min. = min (Elapsed),
+            Max. = max (Elapsed),
+            Median = median(Elapsed),
+            Mean = mean(Elapsed),
+            SD = sd (Elapsed),
+            CV = 100 * sd(Elapsed) / mean(Elapsed)
             )
 print(xtable(summary_runtime_hpc_local, type = "latex"), file = "../../tables/summary_runtime_hpc_local.tex")
 
@@ -165,12 +165,12 @@ ggsave("../../plots/violin_memory_hpc_local.png", plot = violin, width = 10, hei
 summary_memory_hpc_local <-  data %>%
   group_by(mode)%>%
   summarize(n=n(),
-            mean = mean(nAveVMSize),
-            median = median(nAveVMSize),
-            sd = sd (nAveVMSize),
-            IQR = IQR (nAveVMSize),
-            min = min (nAveVMSize),
-            max = max (nAveVMSize)
+            Min. = min (nAveVMSize),
+            Max. = max (nAveVMSize),
+            Median = median(nAveVMSize),
+            Mean = mean(nAveVMSize),
+            SD = sd (nAveVMSize),
+            CV = 100 * sd(nAveVMSize) / mean(nAveVMSize)
             )
 print(xtable(summary_memory_hpc_local, type = "latex"), file = "../../tables/summary_memory_hpc_local.tex")
 

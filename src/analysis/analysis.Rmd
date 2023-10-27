@@ -122,7 +122,7 @@ violin_runtime_hpc_local <- ggplot(data, aes(x = mode, y = Elapsed)) +
     y = "Runtime in seconds")
 
 ggsave("../../plots/violin_runtime_hpc_local.png", plot = violin, width = 10, height = 6)
-ggsave("../../plots/violin_combined.png", plot = grid.arrange(violin_energy_hpc_local, violin_runtime_hpc_local, nrow = 2), width = 10, height = 6)
+ggsave("../../plots/violin_combined.png", plot = grid.arrange(violin_energy_hpc_local, violin_runtime_hpc_local, nrow = 2), width=10, height=12)
 summary_runtime_hpc_local <-  data %>%
   group_by(mode)%>%
   summarize(n=n(),
@@ -170,6 +170,7 @@ violin <- ggplot(data, aes(x=mode, y=nAveVMSize)) +
 ggsave("../../plots/violin_memory_hpc_local.png", plot = violin, width = 10, height = 6)
 
 summary_memory_hpc_local <-  data %>%
+  mutate(nAveVMSize = nAveVMSize / (2**20)) %>%
   group_by(mode)%>%
   summarize(n=n(),
             Min. = min (nAveVMSize),
@@ -209,7 +210,6 @@ cliff.delta(data_local$Elapsed, data_hpc$Elapsed)
 
 wilcox.test(data_local$nAveVMSize, data_hpc$nAveVMSize)
 cliff.delta(data_local$nAveVMSize, data_hpc$nAveVMSize)
-```
 ```
 
 ## Factors in mode local

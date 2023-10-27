@@ -16,6 +16,11 @@ library(tidyverse)
 library(car)
 library(effsize)
 library(xtable)
+library(grid)
+library(ggplot2)
+library(lattice)
+library(gridExtra)
+theme_set(theme_gray(base_size = 18))
 ```
 
 ## Read data
@@ -62,14 +67,14 @@ ggplot(data_hpc, aes(x = ConsumedEnergy)) +
   geom_histogram()
 ggplot(data_local, aes(x = ConsumedEnergy)) + 
   geom_histogram()
-violin <- ggplot(data, aes(x=mode, y=ConsumedEnergy)) +
-          geom_violin(trim=FALSE, alpha = 0.8) + # alpha for the opacity
-          geom_boxplot(width=0.2, fill="white", outlier.size = 0.2) +
-          stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
-          labs(
-          x="mode",
-          y="Consumed Energy in Joules")
-ggsave("../../plots/violin_energy_hpc_local.png", plot = violin, width = 10, height = 6)
+violin_energy_hpc_local <- ggplot(data, aes(x = mode, y = ConsumedEnergy)) +
+  geom_violin(trim = FALSE, alpha = 0.8) + # alpha for the opacity
+  geom_boxplot(width = 0.2, fill = "white", outlier.size = 0.2) +
+  stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+  labs(
+    x = "mode",
+    y = "Consumed Energy in Joules")
+ggsave("../../plots/violin_energy_hpc_local.png", plot = violin_energy_hpc_local, width = 10, height = 6)
 
 summary_energy_hpc_local <-  data %>%
   group_by(mode)%>%
@@ -108,15 +113,16 @@ ggplot(data_hpc, aes(x = Elapsed)) +
   geom_histogram()
 ggplot(data_local, aes(x = Elapsed)) + 
   geom_histogram()
-violin <- ggplot(data, aes(x=mode, y=Elapsed)) +
-          geom_violin(trim=FALSE, alpha = 0.8) + # alpha for the opacity
-          geom_boxplot(width=0.2, fill="white", outlier.size = 0.2) +
-          stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
-          labs(
-          x="mode",
-          y="Runtime in seconds")
-ggsave("../../plots/violin_runtime_hpc_local.png", plot = violin, width = 10, height = 6)
+violin_runtime_hpc_local <- ggplot(data, aes(x = mode, y = Elapsed)) +
+  geom_violin(trim = FALSE, alpha = 0.8) + # alpha for the opacity
+  geom_boxplot(width = 0.2, fill = "white", outlier.size = 0.2) +
+  stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+  labs(
+    x = "mode",
+    y = "Runtime in seconds")
 
+ggsave("../../plots/violin_runtime_hpc_local.png", plot = violin, width = 10, height = 6)
+grid.arrange(violin_energy_hpc_local, violin_runtime_hpc_local, nrow = 2)
 summary_runtime_hpc_local <-  data %>%
   group_by(mode)%>%
   summarize(n=n(),

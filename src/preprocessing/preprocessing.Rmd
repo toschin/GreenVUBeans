@@ -29,6 +29,7 @@ data <- csv_paths %>%
   bind_rows %>%
   mutate(parameters = map(parameters, ~ fromJSON(.) %>% as.data.frame())) %>% 
   unnest(parameters) %>%
+  filter(treatment_id != 3) %>% # remove outlier
   select(mode, ncores, NodeList, concat, queue_limit, Elapsed, ConsumedEnergy, nAveVMSize) %>%
   filter(!is.na(Elapsed), !is.na(ConsumedEnergy)) %>%
   mutate(NodeList = ifelse(NodeList == 'GreenLab-STF', 'gl2' , NodeList))

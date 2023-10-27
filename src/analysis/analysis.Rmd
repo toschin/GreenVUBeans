@@ -122,7 +122,7 @@ violin_runtime_hpc_local <- ggplot(data, aes(x = mode, y = Elapsed)) +
     y = "Runtime in seconds")
 
 ggsave("../../plots/violin_runtime_hpc_local.png", plot = violin, width = 10, height = 6)
-grid.arrange(violin_energy_hpc_local, violin_runtime_hpc_local, nrow = 2)
+ggsave("../../plots/violin_combined.png", plot = grid.arrange(violin_energy_hpc_local, violin_runtime_hpc_local, nrow = 2), width = 10, height = 6)
 summary_runtime_hpc_local <-  data %>%
   group_by(mode)%>%
   summarize(n=n(),

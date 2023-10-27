@@ -22,6 +22,7 @@ library(xtable)
 
 ```{r}
 data <- read.csv("../../data/processed/data.csv")
+# data <- read.csv("data/processed/data.csv")
 data
 ```
 
@@ -198,6 +199,11 @@ cliff.delta(data_local$ConsumedEnergy, data_hpc$ConsumedEnergy)
 
 wilcox.test(data_local$Elapsed, data_hpc$Elapsed, alternative = "less")
 cliff.delta(data_local$Elapsed, data_hpc$Elapsed)
+
+
+wilcox.test(data_local$nAveVMSize, data_hpc$nAveVMSize)
+cliff.delta(data_local$nAveVMSize, data_hpc$nAveVMSize)
+```
 ```
 
 ## Factors in mode local

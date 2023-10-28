@@ -26,7 +26,7 @@ theme_set(theme_gray(base_size = 18))
 ## Read data
 
 ```{r}
-data <- read.csv("../../data/processed/data.csv")
+data <- read.csv("data/processed/data.csv")
 # data <- read.csv("data/processed/data.csv")
 data
 ```
@@ -74,7 +74,7 @@ violin_energy_hpc_local <- ggplot(data, aes(x = mode, y = ConsumedEnergy)) +
   labs(
     x = "mode",
     y = "Consumed Energy in Joules")
-ggsave("../../plots/violin_energy_hpc_local.png", plot = violin_energy_hpc_local, width = 10, height = 6)
+ggsave("plots/violin_energy_hpc_local.png", plot = violin_energy_hpc_local, width = 10, height = 6)
 
 summary_energy_hpc_local <-  data %>%
   group_by(mode)%>%
@@ -86,7 +86,7 @@ summary_energy_hpc_local <-  data %>%
             SD = sd (ConsumedEnergy),
             CV = 100 * sd(ConsumedEnergy) / mean(ConsumedEnergy)
             )
-print(xtable(summary_energy_hpc_local, type = "latex"), file = "../../tables/summary_energy_hpc_local.tex")
+print(xtable(summary_energy_hpc_local, type = "latex"), file = "tables/summary_energy_hpc_local.tex")
 
 qqPlot(data_hpc$ConsumedEnergy)
 qqPlot(data_local$ConsumedEnergy)
@@ -121,8 +121,8 @@ violin_runtime_hpc_local <- ggplot(data, aes(x = mode, y = Elapsed)) +
     x = "mode",
     y = "Runtime in seconds")
 
-ggsave("../../plots/violin_runtime_hpc_local.png", plot = violin, width = 10, height = 6)
-ggsave("../../plots/violin_combined.png", plot = grid.arrange(violin_energy_hpc_local, violin_runtime_hpc_local, nrow = 2), width=10, height=12)
+ggsave("plots/violin_runtime_hpc_local.png", plot = violin_runtime_hpc_local, width = 10, height = 6)
+ggsave("plots/violin_combined.png", plot = grid.arrange(violin_energy_hpc_local, violin_runtime_hpc_local, nrow = 2), width=10, height=12)
 summary_runtime_hpc_local <-  data %>%
   group_by(mode)%>%
   summarize(n=n(),
@@ -133,7 +133,7 @@ summary_runtime_hpc_local <-  data %>%
             SD = sd (Elapsed),
             CV = 100 * sd(Elapsed) / mean(Elapsed)
             )
-print(xtable(summary_runtime_hpc_local, type = "latex"), file = "../../tables/summary_runtime_hpc_local.tex")
+print(xtable(summary_runtime_hpc_local, type = "latex"), file = "tables/summary_runtime_hpc_local.tex")
 
 qqPlot(data_hpc$Elapsed)
 qqPlot(data_local$Elapsed)
@@ -167,7 +167,7 @@ violin <- ggplot(data, aes(x=mode, y=nAveVMSize)) +
           labs(title="Violin Plot with Inner Boxplot",
           x="mode",
           y="Average Virtual Memory Size in Bytes")
-ggsave("../../plots/violin_memory_hpc_local.png", plot = violin, width = 10, height = 6)
+ggsave("plots/violin_memory_hpc_local.png", plot = violin, width = 10, height = 6)
 
 summary_memory_hpc_local <-  data %>%
   mutate(nAveVMSize = nAveVMSize / (2**20)) %>%
@@ -180,7 +180,7 @@ summary_memory_hpc_local <-  data %>%
             SD = sd (nAveVMSize),
             CV = 100 * sd(nAveVMSize) / mean(nAveVMSize)
             )
-print(xtable(summary_memory_hpc_local, type = "latex"), file = "../../tables/summary_memory_hpc_local.tex")
+print(xtable(summary_memory_hpc_local, type = "latex"), file = "tables/summary_memory_hpc_local.tex")
 
 qqPlot(data_hpc$nAveVMSize)
 qqPlot(data_local$nAveVMSize)
@@ -305,9 +305,9 @@ data_local_gl5_gl6 <- data_local %>%
 lm_gl2_gl5 <- lm(ConsumedEnergy ~ ncores + NodeList, data=data_local_gl2_gl5) #ncores and NodeList not significant
 lm_gl5_gl6 <- lm(ConsumedEnergy ~ ncores + NodeList, data=data_local_gl5_gl6) #NodeList not significant
 anova_energy_local_gl2_gl5 <- anova(lm_gl2_gl5)
-print(xtable(anova_energy_local_gl2_gl5, type = "latex"), file = "../../tables/anova_energy_local_gl2_gl5.tex")
+print(xtable(anova_energy_local_gl2_gl5, type = "latex"), file = "tables/anova_energy_local_gl2_gl5.tex")
 anova_energy_local_gl5_gl6 <- anova(lm_gl5_gl6)
-print(xtable(anova_energy_local_gl5_gl6, type = "latex"), file = "../../tables/anova_energy_local_gl5_gl6.tex")
+print(xtable(anova_energy_local_gl5_gl6, type = "latex"), file = "tables/anova_energy_local_gl5_gl6.tex")
 qqPlot(residuals(lm_gl2_gl5))
 shapiro.test(residuals(lm_gl2_gl5))
 ks.test(residuals(lm_gl2_gl5), "pnorm")
@@ -338,9 +338,9 @@ ks.test(residuals(lm_local), "pnorm")
 lm_gl2_gl5 <- lm(Elapsed ~ ncores + NodeList, data=data_local_gl2_gl5) #ncores and NodeList not significant
 lm_gl5_gl6 <- lm(Elapsed ~ ncores + NodeList, data=data_local_gl5_gl6) #NodeList not significant
 anova_runtime_local_gl2_gl5 <- anova(lm_gl2_gl5)
-print(xtable(anova_runtime_local_gl2_gl5, type = "latex"), file = "../../tables/anova_runtime_local_gl2_gl5.tex")
+print(xtable(anova_runtime_local_gl2_gl5, type = "latex"), file = "tables/anova_runtime_local_gl2_gl5.tex")
 anova_runtime_local_gl5_gl6 <- anova(lm_gl5_gl6)
-print(xtable(anova_runtime_local_gl5_gl6, type = "latex"), file = "../../tables/anova_runtime_local_gl5_gl6.tex")
+print(xtable(anova_runtime_local_gl5_gl6, type = "latex"), file = "tables/anova_runtime_local_gl5_gl6.tex")
 qqPlot(residuals(lm_gl2_gl5))
 shapiro.test(residuals(lm_gl2_gl5))
 ks.test(residuals(lm_gl2_gl5), "pnorm")
@@ -370,9 +370,9 @@ ks.test(residuals(lm_local), "pnorm")
 lm_gl2_gl5 <- lm(nAveVMSize ~ ncores + NodeList, data=data_local_gl2_gl5) #ncores and NodeList not significant
 lm_gl5_gl6 <- lm(nAveVMSize ~ ncores + NodeList, data=data_local_gl5_gl6) #NodeList not significant
 anova_memory_local_gl2_gl5 <- anova(lm_gl2_gl5)
-print(xtable(anova_memory_local_gl2_gl5, type = "latex"), file = "../../tables/anova_memory_local_gl2_gl5.tex")
+print(xtable(anova_memory_local_gl2_gl5, type = "latex"), file = "tables/anova_memory_local_gl2_gl5.tex")
 anova_memory_local_gl5_gl6 <- anova(lm_gl5_gl6)
-print(xtable(anova_memory_local_gl5_gl6, type = "latex"), file = "../../tables/anova_memory_local_gl5_gl6.tex")
+print(xtable(anova_memory_local_gl5_gl6, type = "latex"), file = "tables/anova_memory_local_gl5_gl6.tex")
 qqPlot(residuals(lm_gl2_gl5))
 shapiro.test(residuals(lm_gl2_gl5))
 ks.test(residuals(lm_gl2_gl5), "pnorm")
@@ -488,7 +488,7 @@ interaction.plot(data_hpc$concat, data_hpc$queue_limit, data_hpc$nAveVMSize)
 lm_hpc <- lm(ConsumedEnergy ~ queue_limit + concat, data = data_hpc)
 lm_hpc_anova <- anova(lm_hpc)
 
-print(xtable(lm_hpc_anova, type = "latex"), file = "../../tables/anova_energy_hpc.tex")
+print(xtable(lm_hpc_anova, type = "latex"), file = "tables/anova_energy_hpc.tex")
 summary(lm_hpc)
 qqPlot(residuals(lm_hpc))
 
@@ -511,7 +511,7 @@ qqPlot(residuals(lm_hpc2))
 # Additive Model without Interaction
 lm_hpc_elapsed <- lm(Elapsed ~ queue_limit + concat, data = data_hpc)
 lm_hpc_anova <- anova(lm_hpc_elapsed)
-print(xtable(lm_hpc_anova, type = "latex"), file = "../../tables/anova_runtime_hpc.tex")
+print(xtable(lm_hpc_anova, type = "latex"), file = "tables/anova_runtime_hpc.tex")
 qqPlot(residuals(lm_hpc_elapsed))
 
 shapiro.test(residuals(lm_hpc_elapsed))
@@ -532,7 +532,7 @@ qqPlot(residuals(lm_hpc_elapsed_2)) # not normal
 # Additive Model without Interaction
 lm_hpc_mem <- lm(nAveVMSize ~ queue_limit + concat, data = data_hpc)
 lm_hpc_anova <- anova(lm_hpc_mem)
-print(xtable(lm_hpc_anova, type = "latex"), file = "../../tables/anova_memory_hpc.tex")
+print(xtable(lm_hpc_anova, type = "latex"), file = "tables/anova_memory_hpc.tex")
 qqPlot(residuals(lm_hpc_mem))
 
 shapiro.test(residuals(lm_hpc_mem))
@@ -541,7 +541,7 @@ fittedVsResiduals <- ggplot(lm_hpc_mem, aes(x=fitted(lm_hpc_mem), y=residuals(lm
     geom_hline(yintercept=0)
 
 abline(0,0)
-ggsave("../../plots/fittedVsResiduals_memory_hpc.png", plot = fittedVsResiduals, width = 10, height = 6)
+ggsave("plots/fittedVsResiduals_memory_hpc.png", plot = fittedVsResiduals, width = 10, height = 6)
 ncvTest(lm_hpc_mem)
 ```
 

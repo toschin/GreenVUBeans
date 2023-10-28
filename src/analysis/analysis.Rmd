@@ -279,9 +279,23 @@ data_local %>%
             min = min (nAveVMSize),
             max = max (nAveVMSize)
             )
-interaction.plot(data_local$ncores, data_local$NodeList, data_local$ConsumedEnergy)
-interaction.plot(data_local$ncores, data_local$NodeList, data_local$Elapsed)
-interaction.plot(data_local$ncores, data_local$NodeList, data_local$nAveVMSize)
+
+output_directory <- "../../plots/"
+
+png(file.path(output_directory, "interaction_nodes_energy.png"))
+interaction_nodes_energy <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$ConsumedEnergy)
+interaction_nodes_energy
+dev.off()
+
+png(file.path(output_directory, "interaction_nodes_runtime.png"))
+interaction_nodes_runtime <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$Elapsed)
+interaction_nodes_runtime
+dev.off()
+
+png(file.path(output_directory, "interaction_nodes_memory.png"))
+interaction_nodes_memory <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$nAveVMSize)
+interaction_nodes_memory
+dev.off()
 ```
 
 ### Statistical Tests
@@ -436,12 +450,14 @@ ggplot(data_hpc, aes(x=queue_limit, y=nAveVMSize)) +
           labs(title="Boxplot",
           x="Queue Limit",
           y="nAveVMSize")
-ggplot(data_hpc, aes(x=concat, y=nAveVMSize)) +
+boxplot_memory_hpc_concat <- ggplot(data_hpc, aes(x=concat, y=nAveVMSize)) +
           geom_boxplot() +
           stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
           labs(title="Boxplot",
           x="Concat",
           y="nAveVMSize")
+
+ggsave("../../plots/boxplot_memory_hpc_concat.png", plot = boxplot_memory_hpc_concat, width = 10, height = 6)
 
 data_hpc %>%
   group_by(queue_limit)%>%
@@ -482,6 +498,13 @@ interaction.plot(data_hpc$queue_limit, data_hpc$concat, data_hpc$Elapsed)
 interaction.plot(data_hpc$concat, data_hpc$queue_limit, data_hpc$Elapsed)
 interaction.plot(data_hpc$queue_limit, data_hpc$concat, data_hpc$nAveVMSize)
 interaction.plot(data_hpc$concat, data_hpc$queue_limit, data_hpc$nAveVMSize)
+```
+
+```{r}
+var(data_hpc['nAveVMSize'])
+```
+
+```{ata_hpc$nAveVMSize)}
 ```
 
 ### Statistical Tests

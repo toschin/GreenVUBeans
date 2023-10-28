@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, results = "
 
 ```{r}
 library(tidyverse)
+library(lsr)
 library(car)
 library(effsize)
 library(xtable)
@@ -217,9 +218,10 @@ cliff.delta(nAveVMSize ~ mode, data = data)
 ### Graphical Summary
 
 ```{r}
-ggplot(data_local, aes(x = ncores, y = ConsumedEnergy)) + 
+bar_plot_local <- ggplot(data_local, aes(x = ncores, y = ConsumedEnergy)) + 
   facet_grid(NodeList ~ ncores, labeller=label_both, scales='fixed') +
   stat_summary(fun = mean, geom = "bar") 
+ggsave("../../plots/bar_energy_local_ncores_node.png", plot = bar_plot_local, width = 10, height = 6)
 ggplot(data_local, aes(x = ncores, y = Elapsed)) + 
   facet_grid(NodeList ~ ncores, labeller=label_both, scales='fixed') +
   stat_summary(fun = mean, geom = "bar")
@@ -392,9 +394,12 @@ ncvTest(lm_gl5_gl6)
 ### Graphical Summary
 
 ```{r}
-ggplot(data_hpc, aes(x = queue_limit, y = ConsumedEnergy)) + 
+bar_energy_hpc_concat_queueLimit <- ggplot(data_hpc, aes(x = queue_limit, y = ConsumedEnergy)) + 
   facet_grid(concat ~ queue_limit, labeller=label_both, scales='fixed') +
-  stat_summary(fun = mean, geom = "bar") 
+  stat_summary(fun = mean, geom = "bar") +
+  xlab("Queue Limit")
+  ylab("Consumed Energy in Joules")
+ggsave("../../plots/bar_energy_hpc_concat_queueLimit.png", plot = bar_energy_hpc_concat_queueLimit, width = 10, height = 6)
 ggplot(data_hpc, aes(x = queue_limit, y = Elapsed)) + 
   facet_grid(concat ~ queue_limit, labeller=label_both, scales='fixed') +
   stat_summary(fun = mean, geom = "bar") 
@@ -496,6 +501,8 @@ shapiro.test(residuals(lm_hpc))
 plot(fitted(lm_hpc), residuals(lm_hpc))
 abline(0,0)
 ncvTest(lm_hpc)
+
+etaSquared(lm_hpc)
 ```
 
 ```{r}

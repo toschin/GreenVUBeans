@@ -22,3 +22,8 @@ After running these last scripts, the experiment runs are done and the correspon
 
 
 ## Analyse data
+
+Two scripts are available for analysing the results of our experiment in the ``src`` directory.
+
+* The file ``preprocessing/preprocessing.Rmd`` is used to preprocess the data before the real analysis.
+* The file ``analysis/analysis.Rmd`` contains all the relevant commands that we used to analyse our data and can be used as a roadmap in order to read the results section of the report.

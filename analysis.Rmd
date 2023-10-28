@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, results = "
 
 ```{r}
 library(tidyverse)
+library(lsr)
 library(car)
 library(effsize)
 library(xtable)
@@ -217,9 +218,10 @@ cliff.delta(nAveVMSize ~ mode, data = data)
 ### Graphical Summary
 
 ```{r}
-ggplot(data_local, aes(x = ncores, y = ConsumedEnergy)) + 
+bar_plot_local <- ggplot(data_local, aes(x = ncores, y = ConsumedEnergy)) + 
   facet_grid(NodeList ~ ncores, labeller=label_both, scales='fixed') +
   stat_summary(fun = mean, geom = "bar") 
+ggsave("../../plots/bar_energy_local_ncores_node.png", plot = bar_plot_local, width = 10, height = 6)
 ggplot(data_local, aes(x = ncores, y = Elapsed)) + 
   facet_grid(NodeList ~ ncores, labeller=label_both, scales='fixed') +
   stat_summary(fun = mean, geom = "bar")
@@ -277,9 +279,23 @@ data_local %>%
             min = min (nAveVMSize),
             max = max (nAveVMSize)
             )
-interaction.plot(data_local$ncores, data_local$NodeList, data_local$ConsumedEnergy)
-interaction.plot(data_local$ncores, data_local$NodeList, data_local$Elapsed)
-interaction.plot(data_local$ncores, data_local$NodeList, data_local$nAveVMSize)
+
+output_directory <- "../../plots/"
+
+png(file.path(output_directory, "interaction_nodes_energy.png"))
+interaction_nodes_energy <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$ConsumedEnergy)
+interaction_nodes_energy
+dev.off()
+
+png(file.path(output_directory, "interaction_nodes_runtime.png"))
+interaction_nodes_runtime <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$Elapsed)
+interaction_nodes_runtime
+dev.off()
+
+png(file.path(output_directory, "interaction_nodes_memory.png"))
+interaction_nodes_memory <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$nAveVMSize)
+interaction_nodes_memory
+dev.off()
 ```
 
 ### Statistical Tests
@@ -392,9 +408,12 @@ ncvTest(lm_gl5_gl6)
 ### Graphical Summary
 
 ```{r}
-ggplot(data_hpc, aes(x = queue_limit, y = ConsumedEnergy)) + 
+bar_energy_hpc_concat_queueLimit <- ggplot(data_hpc, aes(x = queue_limit, y = ConsumedEnergy)) + 
   facet_grid(concat ~ queue_limit, labeller=label_both, scales='fixed') +
-  stat_summary(fun = mean, geom = "bar") 
+  stat_summary(fun = mean, geom = "bar") +
+  xlab("Queue Limit")
+  ylab("Consumed Energy in Joules")
+ggsave("../../plots/bar_energy_hpc_concat_queueLimit.png", plot = bar_energy_hpc_concat_queueLimit, width = 10, height = 6)
 ggplot(data_hpc, aes(x = queue_limit, y = Elapsed)) + 
   facet_grid(concat ~ queue_limit, labeller=label_both, scales='fixed') +
   stat_summary(fun = mean, geom = "bar") 
@@ -431,12 +450,14 @@ ggplot(data_hpc, aes(x=queue_limit, y=nAveVMSize)) +
           labs(title="Boxplot",
           x="Queue Limit",
           y="nAveVMSize")
-ggplot(data_hpc, aes(x=concat, y=nAveVMSize)) +
+boxplot_memory_hpc_concat <- ggplot(data_hpc, aes(x=concat, y=nAveVMSize)) +
           geom_boxplot() +
           stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
           labs(title="Boxplot",
           x="Concat",
           y="nAveVMSize")
+
+ggsave("../../plots/boxplot_memory_hpc_concat.png", plot = boxplot_memory_hpc_concat, width = 10, height = 6)
 
 data_hpc %>%
   group_by(queue_limit)%>%
@@ -479,6 +500,13 @@ interaction.plot(data_hpc$queue_limit, data_hpc$concat, data_hpc$nAveVMSize)
 interaction.plot(data_hpc$concat, data_hpc$queue_limit, data_hpc$nAveVMSize)
 ```
 
+```{r}
+var(data_hpc['nAveVMSize'])
+```
+
+```{ata_hpc$nAveVMSize)}
+```
+
 ### Statistical Tests
 
 #### Consumed Energy
@@ -496,6 +524,8 @@ shapiro.test(residuals(lm_hpc))
 plot(fitted(lm_hpc), residuals(lm_hpc))
 abline(0,0)
 ncvTest(lm_hpc)
+
+etaSquared(lm_hpc)
 ```
 
 ```{r}

@@ -69,9 +69,10 @@ ggplot(data_hpc, aes(x = ConsumedEnergy)) +
 ggplot(data_local, aes(x = ConsumedEnergy)) + 
   geom_histogram()
 violin_energy_hpc_local <- ggplot(data, aes(x = mode, y = ConsumedEnergy)) +
-  geom_violin(trim = FALSE, alpha = 0.8) + # alpha for the opacity
+  geom_violin(trim = TRUE, alpha = 0.8) + # alpha for the opacity
   geom_boxplot(width = 0.2, fill = "white", outlier.size = 0.2) +
-  stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+  stat_summary(fun = mean, geom = "point", shape = 19, size = 3, col="#BC4B51") +
+  geom_jitter(shape=16, position=position_jitter(0.1), col="#759EB8") +
   labs(
     x = "mode",
     y = "Consumed Energy in Joules")
@@ -115,12 +116,14 @@ ggplot(data_hpc, aes(x = Elapsed)) +
 ggplot(data_local, aes(x = Elapsed)) + 
   geom_histogram()
 violin_runtime_hpc_local <- ggplot(data, aes(x = mode, y = Elapsed)) +
-  geom_violin(trim = FALSE, alpha = 0.8) + # alpha for the opacity
+  geom_violin(trim = TRUE, alpha = 0.8) + # alpha for the opacity
   geom_boxplot(width = 0.2, fill = "white", outlier.size = 0.2) +
-  stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
+  stat_summary(fun = mean, geom = "point", shape = 19, size = 3, col="#BC4B51") +
+  geom_jitter(shape=16, position=position_jitter(0.1), col="#759EB8") +
   labs(
     x = "mode",
     y = "Runtime in seconds")
+# blue #759EB8 dots are the data points and red dots are the mean
 
 ggsave("plots/violin_runtime_hpc_local.png", plot = violin_runtime_hpc_local, width = 10, height = 6)
 ggsave("plots/violin_combined.png", plot = grid.arrange(violin_energy_hpc_local, violin_runtime_hpc_local, nrow = 2), width=10, height=12)
@@ -220,8 +223,9 @@ cliff.delta(nAveVMSize ~ mode, data = data)
 ```{r}
 bar_plot_local <- ggplot(data_local, aes(x = ncores, y = ConsumedEnergy)) + 
   facet_grid(NodeList ~ ncores, labeller=label_both, scales='fixed') +
-  stat_summary(fun = mean, geom = "bar") 
-ggsave("../../plots/bar_energy_local_ncores_node.png", plot = bar_plot_local, width = 10, height = 6)
+  stat_summary(fun = mean, geom = "bar") +
+  labs(x="ncores", y="Consumed Energy in Joules")
+ggsave("plots/bar_energy_local_ncores_node.png", plot = bar_plot_local, width = 10, height = 6)
 ggplot(data_local, aes(x = ncores, y = Elapsed)) + 
   facet_grid(NodeList ~ ncores, labeller=label_both, scales='fixed') +
   stat_summary(fun = mean, geom = "bar")
@@ -280,20 +284,38 @@ data_local %>%
             max = max (nAveVMSize)
             )
 
-output_directory <- "../../plots/"
+output_directory <- "plots/"
 
 png(file.path(output_directory, "interaction_nodes_energy.png"))
-interaction_nodes_energy <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$ConsumedEnergy)
+interaction_nodes_energy <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$ConsumedEnergy,
+    xlab = "ncores", ylab = "Consumed Energy in Joules",
+    trace.label = "Nodes:",
+    col = "#759EB8", # add color for the lines
+    lwd = 4, # increase line width
+cex.main=1.5, cex.lab=1.5, cex.axis=1.5
+)
 interaction_nodes_energy
 dev.off()
 
 png(file.path(output_directory, "interaction_nodes_runtime.png"))
-interaction_nodes_runtime <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$Elapsed)
+interaction_nodes_runtime <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$Elapsed, xlab = "ncores", ylab = "Runtime in seconds",
+    trace.label = "Nodes:",
+    col = "#759EB8", # add color for the lines
+    lwd = 4, # increase line width
+                                              cex.main=1.5, cex.lab=1.5, cex.axis=1.5
+)
+
 interaction_nodes_runtime
 dev.off()
 
 png(file.path(output_directory, "interaction_nodes_memory.png"))
-interaction_nodes_memory <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$nAveVMSize)
+interaction_nodes_memory <- interaction.plot(data_local$ncores, data_local$NodeList, data_local$nAveVMSize,
+xlab = "ncores", ylab = "Average Virtual Memory Size in Bytes",
+    trace.label = "Nodes:",
+    col = "#759EB8", # add color for the lines
+    lwd = 4, # increase line width
+    cex.main=1.5, cex.lab=1.5, cex.axis=1.5
+)
 interaction_nodes_memory
 dev.off()
 ```
@@ -409,11 +431,10 @@ ncvTest(lm_gl5_gl6)
 
 ```{r}
 bar_energy_hpc_concat_queueLimit <- ggplot(data_hpc, aes(x = queue_limit, y = ConsumedEnergy)) + 
-  facet_grid(concat ~ queue_limit, labeller=label_both, scales='fixed') +
-  stat_summary(fun = mean, geom = "bar") +
-  xlab("Queue Limit")
-  ylab("Consumed Energy in Joules")
-ggsave("../../plots/bar_energy_hpc_concat_queueLimit.png", plot = bar_energy_hpc_concat_queueLimit, width = 10, height = 6)
+    facet_grid(concat ~ queue_limit, labeller=label_both, scales='fixed') +
+    stat_summary(fun = mean, geom = "bar") +
+    labs(x="Queue Limit", y="Consumed Energy in Joules")
+ggsave("plots/bar_energy_hpc_concat_queueLimit.png", plot = bar_energy_hpc_concat_queueLimit, width = 10, height = 6)
 ggplot(data_hpc, aes(x = queue_limit, y = Elapsed)) + 
   facet_grid(concat ~ queue_limit, labeller=label_both, scales='fixed') +
   stat_summary(fun = mean, geom = "bar") 
@@ -452,12 +473,13 @@ ggplot(data_hpc, aes(x=queue_limit, y=nAveVMSize)) +
           y="nAveVMSize")
 boxplot_memory_hpc_concat <- ggplot(data_hpc, aes(x=concat, y=nAveVMSize)) +
           geom_boxplot() +
-          stat_summary(fun = mean, geom = "point", shape = 1, size = 2) +
-          labs(title="Boxplot",
-          x="Concat",
-          y="nAveVMSize")
+          stat_summary(fun = mean, geom = "point", shape = 16, size = 4, col="#BC4B51") +
+  geom_jitter(shape=16, position=position_jitter(0.1), col="#759EB8") +
+          labs(
+          x="Concat parameter",
+          y="Average Virtual Memory Size in Bytes")
 
-ggsave("../../plots/boxplot_memory_hpc_concat.png", plot = boxplot_memory_hpc_concat, width = 10, height = 6)
+ggsave("plots/boxplot_memory_hpc_concat.png", plot = boxplot_memory_hpc_concat, width = 10, height = 6)
 
 data_hpc %>%
   group_by(queue_limit)%>%
@@ -567,8 +589,10 @@ qqPlot(residuals(lm_hpc_mem))
 
 shapiro.test(residuals(lm_hpc_mem))
 fittedVsResiduals <- ggplot(lm_hpc_mem, aes(x=fitted(lm_hpc_mem), y=residuals(lm_hpc_mem))) + 
-    geom_point(shape=1) +
-    geom_hline(yintercept=0)
+    geom_point(shape=16, col="#759EB8", size=5) +
+    geom_hline(yintercept=0)+
+   labs(x="Fitted values", y="Residuals")
+
 
 abline(0,0)
 ggsave("plots/fittedVsResiduals_memory_hpc.png", plot = fittedVsResiduals, width = 10, height = 6)

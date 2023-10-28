@@ -358,6 +358,10 @@ ks.test(residuals(lm_gl5_gl6), "pnorm")
 plot(fitted(lm_gl5_gl6), residuals(lm_gl5_gl6))
 abline(0.0,0.0)
 ncvTest(lm_gl5_gl6)
+
+# Effect sizes
+etaSquared(lm_gl2_gl5)
+etaSquared(lm_gl5_gl6)
 ```
 
 #### Runtime
@@ -391,6 +395,9 @@ ks.test(residuals(lm_gl5_gl6), "pnorm")
 plot(fitted(lm_gl5_gl6), residuals(lm_gl5_gl6))
 abline(0.0,0.0)
 ncvTest(lm_gl5_gl6)
+
+etaSquared(lm_gl2_gl5)
+etaSquared(lm_gl5_gl6)
 ```
 
 #### nAveVMSize
@@ -423,6 +430,9 @@ ks.test(residuals(lm_gl5_gl6), "pnorm")
 plot(fitted(lm_gl5_gl6), residuals(lm_gl5_gl6))
 abline(0.0,0.0)
 ncvTest(lm_gl5_gl6)
+
+etaSquared(lm_gl2_gl5)
+etaSquared(lm_gl5_gl6)
 ```
 
 ## Factors in mode HPC
@@ -597,6 +607,7 @@ fittedVsResiduals <- ggplot(lm_hpc_mem, aes(x=fitted(lm_hpc_mem), y=residuals(lm
 abline(0,0)
 ggsave("plots/fittedVsResiduals_memory_hpc.png", plot = fittedVsResiduals, width = 10, height = 6)
 ncvTest(lm_hpc_mem)
+etaSquared(lm_hpc_mem)
 ```
 
 ```{r}
